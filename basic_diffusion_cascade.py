@@ -3,29 +3,33 @@ import pylab
 import random as rd
 import random_graph_construction as rg
 import matplotlib.pyplot as plt
+# from sets import Set
+
+
+wt = 1/10
 
 # One step of a random propagation given a fixed set of nodes infected at the start. Returns the new infected nodes
-def propagation_step(G, some_nodes):
+def propagation_step(G, some_nodes, infectious_nodes):
     new_infected_nodes = []
-    for node in some_nodes:
+    for node in infectious_nodes:
         for neighbor in nx.all_neighbors(G,node):
-            if neighbor not in some_nodes:
-                if rd.random()<wt:
+            if neighbor not in some_nodes: # If not already infected
+                if rd.random()<G[node][neighbor]['weight']:
                     new_infected_nodes.append(neighbor)
     return new_infected_nodes
 
 # Complete propagation, with each node trying to infect another node
 def propagation(G, starting_nodes):
-    new_infected_nodes = [0]
+    new_infected_nodes = starting_nodes[:]
     infected_nodes = starting_nodes[:]
     while(len(new_infected_nodes)>0):
-        new_infected_nodes = propagation_step(G, infected_nodes)
+        new_infected_nodes = propagation_step(G, infected_nodes, new_infected_nodes)
         infected_nodes += new_infected_nodes
     return infected_nodes
 
 # Computation of the expected size sigma (which is the expectation of the number of infected nodes at the end)
 def sigma(G, some_nodes):
-    nb_iter = 50
+    nb_iter = 10
     mean = 0
     for it in range(nb_iter):
         mean += len(propagation(G, some_nodes))
@@ -39,7 +43,7 @@ def influential_nodes(G, max_nb_nodes):
         sigma_A = sigma(G, A)
         print(sigma_A)
         marginal_gain = 0
-        for node in range(nx.number_of_nodes(G)): # Search for the node not already in A giving the best marginal gain
+        for node in nx.nodes(G): # Search for the node not already in A giving the best marginal gain
             if node not in A:
                 B = A[:]
                 B.append(node)
@@ -70,49 +74,42 @@ def display_graph(G, infected, influential_nodes):
     # Plot of the graph
     nx.draw_networkx(G, node_color=node_colors)
 
+# Parsing function for the graph data set
+def read_data(filename, in_degree_model, split, first_row):
+    G = nx.Graph()
+    nodes = set()
+    edges = []
 
-## Test on different graphs
+    file = open(filename,'r')
+    rows = [row.rstrip('\n') for row in file]
+    rows = rows[first_row:]
 
-# # Creation of the graph and addition of the first nodes
-# G = nx.Graph()
-# list_nodes = [k for k in range(8)]
-# G.add_nodes_from(list_nodes)
-#
-# # The weight will stay the same for every edges, 1/2
-# wt = 1/3
-#
-# # Construction of the edges
-# list_weighted_edges = [(0,1,wt),(1,2,wt),(1,4,wt),(1,6,wt),(2,3,wt),(4,5,wt),(4,6,wt),(4,7,wt),(5,7,wt)]
-# G.add_weighted_edges_from(list_weighted_edges)
-#
-# influential_nodes = influential_nodes(G, 2)
-# print(influential_nodes)
-# infected = propagation(G, influential_nodes) # Listof infected nodes after the propagation
+    for row in rows:
+        column = row.split(split)
+        for node in column:
+            nodes.add(int(node))
 
-# Creation of a random Erdos Reniy graph
-number_of_nodes = 50
-bernoulli_mean = 1/20
-G = rg.random_graph(number_of_nodes, bernoulli_mean)
+    if(in_degree_model):
+        weight_per_node = [0 for node in range(max(nodes)+1)]
+        for row in rows:
+            column = row.split(split)
+            weight_per_node[int(column[1])] += 1
 
-wt = bernoulli_mean*2
-influential_nodes = influential_nodes(G, 7)
-print(influential_nodes)
-infected = propagation(G, influential_nodes) # Listof infected nodes after the propagation
+        for k in range(len(weight_per_node)):
+            if weight_per_node[k] != 0:
+                weight_per_node[k] = 1/weight_per_node[k]
 
-influential_nodes2 = rd.sample([k for k in range(number_of_nodes)], 7)
-infected2 = propagation(G, influential_nodes2)
+    else:
+        weight = [0.1, 0.01, 0.001]
+        weight_per_node = [rd.choice(weight) for node in range(max(nodes)+1)]
 
-plt.figure(1)
-plt.subplot(1,2,1)
-display_graph(G, infected, influential_nodes)
-plt.text(-0.2, 1.0, "Number of RANDOMLY infected nodes: "+str(len(infected)))
-plt.text(-0.2, 1.1, "Expected size: "+str(sigma(G, influential_nodes)))
-plt.title("Diffusion with influential nodes obtained with the greedy algorithm")
+    for row in rows:
+        column = row.split(split)
+        edges.append((int(column[0]),int(column[1]),weight_per_node[int(column[1])]))
 
-plt.subplot(1,2,2)
-display_graph(G, infected2, influential_nodes2)
-plt.text(-0.2, 1.0, "Number of RANDOMLY infected nodes: "+str(len(infected2)))
-plt.text(-0.2, 1.1, "Expected size: "+str(sigma(G, influential_nodes2)))
-plt.title("Diffusion with random influential nodes")
+    G.add_nodes_from(nodes)
+    G.add_weighted_edges_from(edges)
 
-plt.show()
+    print("Number of nodes: ", nx.number_of_nodes(G))
+    print("Number of edges: ", nx.number_of_edges(G))
+    return G

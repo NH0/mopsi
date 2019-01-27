@@ -21,9 +21,6 @@ def random_graph(nb_nodes, bernoulli_mean):
 
     return(G)
 
-# def random_graph2(nb_nodes,bernoulli_mean): #NOT WEIGHTED -> NOT USEFULL
-#     return nx.erdos_renyi_graph(nb_nodes,bernoulli_mean)
-
 # Random generation of an Erdos Reniy graph with fixed size adapted for the threshold model and randomly weighted edges
 def random_graph_with_random_weights(nb_nodes, bernoulli_mean, threshold_flag):
     G = nx.Graph()
