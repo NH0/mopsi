@@ -53,11 +53,11 @@ from basic_diffusion_cascade import *
 # plt.show()
 
 ############## Test on a "who-trust-who" graph ##############
-G = read_data('soc-hamsterster.edges', in_degree_model=True, split=' ', first_row=2)
+# G = read_data('soc-hamsterster.edges', in_degree_model=True, split=' ', first_row=2)
 
-influential_nodes = influential_nodes(G,2)
+# influential_nodes = influential_nodes(G,2)
 # print(sigma(G, rd.sample(nx.nodes(G),3)))
-print(sigma(G, influential_nodes))
+# print(sigma(G, influential_nodes))
 # for nb_influential_nodes in range(30):
 #     influential_nodes = influential_nodes(G,nb_influential_nodes)
 #     expected_size.append(sigma(G, influential_nodes))
@@ -65,3 +65,25 @@ print(sigma(G, influential_nodes))
 # plt.figure()
 # plt.plot([nb_nodes for nb_nodes in range(30)], expected_size)
 # plt.show()
+
+############# Test on a graphon generated graph ############
+new_graph = False
+if(new_graph):
+    G = rg.random_graph_from_graphon(40, rg.W_exp)
+    nx.write_edgelist(G, 'graph.txt')
+else:
+    G = nx.read_edgelist('graph.txt')
+
+# influential_nodes = influential_nodes(G,2)
+# print('The two most influential nodes: ', influential_nodes)
+# print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
+
+expected_size = []
+
+nb_influential_nodes = [n for n in range(20)]
+for nb in nb_influential_nodes:
+    expected_size.append(sigma(G, influential_nodes(G,nb)))
+
+plt.figure(1)
+plt.plot(nb_influential_nodes, expected_size)
+plt.show()

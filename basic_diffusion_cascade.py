@@ -41,7 +41,6 @@ def influential_nodes(G, max_nb_nodes):
     A = []
     for i in range(max_nb_nodes):
         sigma_A = sigma(G, A)
-        print(sigma_A)
         marginal_gain = 0
         for node in nx.nodes(G): # Search for the node not already in A giving the best marginal gain
             if node not in A:
@@ -52,7 +51,7 @@ def influential_nodes(G, max_nb_nodes):
                     marginal_gain = sigma_B-sigma_A
                     best_node = node
         A.append(best_node)
-    return(A)
+    return A
 
 # Display a graph with in orange the most influential nodes, in red the nodes infected by those nodes (which is random) and in green the nodes which weren't infected
 def display_graph(G, infected, influential_nodes):
