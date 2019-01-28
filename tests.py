@@ -67,9 +67,9 @@ from basic_diffusion_cascade import *
 # plt.show()
 
 ############# Test on a graphon generated graph ############
-new_graph = False
+new_graph = True # Saving a graph instead of generating a new graph each time
 if(new_graph):
-    G = rg.random_graph_from_graphon(40, rg.W_exp)
+    G = rg.random_graph_from_graphon(20, rg.W_exp)
     nx.write_edgelist(G, 'graph.txt')
 else:
     G = nx.read_edgelist('graph.txt')
@@ -79,11 +79,19 @@ else:
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
 expected_size = []
+iter = 1
 
-nb_influential_nodes = [n for n in range(20)]
-for nb in nb_influential_nodes:
-    expected_size.append(sigma(G, influential_nodes(G,nb)))
+nb_influential_nodes = [n for n in range(4)]
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+    s = 0 # Monte Carlo method for each initial set of nodes
+    for k in range(iter):
+        s += sigma(G, influential_nodes(G,nb))
+    s /= iter
+    expected_size.append(s)
 
 plt.figure(1)
 plt.plot(nb_influential_nodes, expected_size)
+plt.title("Number of infected nodes as a function of the initial number of infected nodes")
+plt.xlabel("Number of initially infected vertices")
+plt.ylabel("Expected size of infected vertices")
 plt.show()
