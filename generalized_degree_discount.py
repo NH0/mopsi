@@ -1,11 +1,17 @@
 import networkx as nx
+import random_graph_construction as rg
+from independent_cascade_model import propagation as prop
+
+n = 4000
+k = 4
+p = 0.01
 
 def findMaxNode(V):
     maxDeg = 0
     node = V[0]
     for v in V:
-        if (nx.len(nx.neighbors(G,v))>maxDeg):
-            maxDeg = nx.len(nx.neighbors(G,v))
+        if (G.degree[v]>maxDeg):
+            maxDeg = G.degree[v]
             node = v
     return node
 
@@ -13,7 +19,7 @@ def generalizedDegreeDiscount(G,k,p):
     V = [i for i in range(nx.number_of_nodes(G))]
     S = []
 
-    gdd = [len(nx.neighbors(G,i)) for i in range(nx.number_of_nodes(G))]
+    gdd = [G.degree[i] for i in range(nx.number_of_nodes(G))]
     t = [0]*nx.number_of_nodes(G)
 
     for i in range(k):
@@ -35,9 +41,15 @@ def generalizedDegreeDiscount(G,k,p):
             for w in nx.neighbors(G,v):
                 if not(w in S):
                     sumtw += t[w]
-            dv = len(nx.neighbors(G,v))
+            dv = G.degree[v]
             gdd[v] = dv - 2*t[v] - (dv - t[v])*t[v]*p + t[v]*(t[v]-1)*p/2 - sumtw*p
             if gdd[v]<0:
                 gdd[v] = 0
 
     return S
+
+G = rg.random_graph_from_graphon(n,rg.W_exp)
+print("##### STARTING CALCULATIONS #####")
+S = generalizedDegreeDiscount(G,k,p)
+print("##### CALCULATIONS DONE #####")
+print(len(prop(G,S,[p for i in range(n)])))
