@@ -28,8 +28,7 @@ def propagation(G, starting_nodes):
     return infected_nodes
 
 # Computation of the expected size sigma (which is the expectation of the number of infected nodes at the end)
-def sigma(G, some_nodes):
-    nb_iter = 10
+def sigma(G, some_nodes, nb_iter=10):
     mean = 0
     for it in range(nb_iter):
         mean += len(propagation(G, some_nodes))
