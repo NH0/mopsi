@@ -1,8 +1,8 @@
 import networkx as nx
 import random_graph_construction as rg
-from independent_cascade_model import propagation as prop
+from basic_diffusion_cascade import sigma
 
-n = 4000
+n = 400
 k = 4
 p = 0.01
 
@@ -51,5 +51,8 @@ def generalizedDegreeDiscount(G,k,p):
 G = rg.random_graph_from_graphon(n,rg.W_exp)
 print("##### STARTING CALCULATIONS #####")
 S = generalizedDegreeDiscount(G,k,p)
-print("##### CALCULATIONS DONE #####")
-print(len(prop(G,S,[p for i in range(n)])))
+print(S)
+print("##### STARTING NODES FOUND #####")
+avgSize = sigma(G,S)
+print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
+print(avgSize)
