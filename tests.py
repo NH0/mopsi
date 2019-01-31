@@ -4,6 +4,7 @@ import random as rd
 import random_graph_construction as rg
 import matplotlib.pyplot as plt
 from basic_diffusion_cascade import *
+from page_rank import influential_nodes_PageRank
 
 
 ## Test on different graphs
@@ -69,28 +70,40 @@ from basic_diffusion_cascade import *
 ############# Test on a graphon generated graph ############
 new_graph = True # Saving a graph instead of generating a new graph each time
 if(new_graph):
-    G = rg.random_graph_from_graphon(20, rg.W_exp)
-    nx.write_edgelist(G, 'graph.txt')
+    G = rg.random_graph_from_graphon(50, rg.W_min, WC_model=True)
+    nx.write_edgelist(G, "graph.txt")
 else:
-    G = nx.read_edgelist('graph.txt')
+    G = nx.read_edgelist("graph.txt", nodetype=int)
 
 # influential_nodes = influential_nodes(G,2)
 # print('The two most influential nodes: ', influential_nodes)
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
+max_influentials = 40
+
 expected_size = []
 iter = 1
 
-nb_influential_nodes = [n for n in range(4)]
+nb_influential_nodes = [n for n in range(max_influentials)]
+influential_nodes = influential_nodes(G,max_influentials)
 for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
-    s = 0 # Monte Carlo method for each initial set of nodes
-    for k in range(iter):
-        s += sigma(G, influential_nodes(G,nb))
-    s /= iter
-    expected_size.append(s)
+    expected_size.append(sigma(G, influential_nodes[:nb]))
+
+expected_size_PageRank = []
+
+influential_nodes_PageRank = influential_nodes_PageRank(G,max_influentials)
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+    expected_size_PageRank.append(sigma(G, influential_nodes_PageRank[:nb]))
+
+expected_size_random = []
+influential_nodes_random = rd.sample([k for k in range(nx.number_of_nodes(G))],max_influentials)
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+    expected_size_random.append(sigma(G, influential_nodes_random[:nb]))
 
 plt.figure(1)
-plt.plot(nb_influential_nodes, expected_size)
+plt.plot(nb_influential_nodes, expected_size, 'r')
+plt.plot(nb_influential_nodes, expected_size_PageRank, 'g')
+plt.plot(nb_influential_nodes, expected_size_random, 'b')
 plt.title("Number of infected nodes as a function of the initial number of infected nodes")
 plt.xlabel("Number of initially infected vertices")
 plt.ylabel("Expected size of infected vertices")
