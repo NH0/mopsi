@@ -12,8 +12,8 @@ wt = 1/10
 def propagation_step(G, some_nodes, infectious_nodes):
     new_infected_nodes = []
     for node in infectious_nodes:
-        for neighbor in nx.all_neighbors(G,node):
-            if neighbor not in some_nodes: # If not already infected
+        for neighbor in G.successors(node):
+            if neighbor not in some_nodes and neighbor not in new_infected_nodes: # If not already infected
                 if rd.random()<G[node][neighbor]['weight']:
                     new_infected_nodes.append(neighbor)
     return new_infected_nodes
