@@ -73,8 +73,8 @@ def random_graph_from_graphon(nb_nodes, W, WC_model=False):
         for node_i in range(nb_nodes):
             for node_j in range(node_i+1, nb_nodes):
                 if rd.random() < W(node_proba[node_i], node_proba[node_j]): # We create an edge with a probability given by the graphon
-                    list_edges.append((node_i,node_j,rd.choice([0.1,0.01,0.001])))
-                    list_edges.append((node_j,node_i,rd.choice([0.1,0.01,0.001])))
+                    list_edges.append((node_i,node_j,rd.choice([0.01,0.001,0.0005])))
+                    list_edges.append((node_j,node_i,rd.choice([0.01,0.001,0.0005])))
 
     G.add_weighted_edges_from(list_edges)
 
