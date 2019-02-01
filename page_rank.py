@@ -32,16 +32,7 @@ def PageRank(G, epsilon=10**(-4), alpha=0.50):
 
 def influential_nodes_PageRank(G, nb_nodes):
     influence_scores = PageRank(G)
-    influential_nodes = sorted(range(len(influence_scores)), key=lambda t: influence_scores[t])
-    # for k in range(nb_nodes):
-    #     best_node = 0
-    #     score = -1
-    #     for node in len(influence_scores):
-    #         if node not in influential_nodes:
-    #             if influence_scores[node] > score:
-    #                 best_node = node
-    #                 score = influence_scores[node]
-    #     influential_nodes.append(best_node)
+    influential_nodes = sorted(range(len(influence_scores)), key=lambda t: -influence_scores[t])
 
     return influential_nodes[:nb_nodes]
 

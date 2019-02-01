@@ -5,6 +5,7 @@ import random_graph_construction as rg
 import matplotlib.pyplot as plt
 from basic_diffusion_cascade import *
 from page_rank import influential_nodes_PageRank
+from generalized_degree_discount import generalizedDegreeDiscount
 
 
 ## Test on different graphs
@@ -70,7 +71,7 @@ from page_rank import influential_nodes_PageRank
 ############# Test on a graphon generated graph ############
 new_graph = True # Saving a graph instead of generating a new graph each time
 if(new_graph):
-    G = rg.random_graph_from_graphon(40, rg.W_min, WC_model=True)
+    G = rg.random_graph_from_graphon(100, rg.W_exp, WC_model=True)
     nx.write_edgelist(G, "graph.txt")
 else:
     G = nx.read_edgelist("graph.txt", nodetype=int)
@@ -79,25 +80,31 @@ else:
 # print('The two most influential nodes: ', influential_nodes)
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
-max_influentials = 20
+max_influentials = 40
 
 expected_size = []
 iter = 1
 
 nb_influential_nodes = [n for n in range(max_influentials)]
-influential_nodes = influential_nodes(G,max_influentials)
-for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
-    expected_size.append(sigma(G, influential_nodes[:nb]))
+
+# expected_size = []
+# influential_nodes = influential_nodes(G,max_influentials)
+# for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+#     expected_size.append(sigma(G, influential_nodes[:nb]))
 
 expected_size_PageRank = []
-
 influential_nodes_PageRank = influential_nodes_PageRank(G,max_influentials)
-for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a PageRank algorithm
     expected_size_PageRank.append(sigma(G, influential_nodes_PageRank[:nb]))
+
+expected_size_degreeDiscount = []
+influential_nodes_degreeDiscount = generalizedDegreeDiscount(G,max_influentials,p=0.01)
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a degree discount algorithm
+    expected_size_degreeDiscount.append(sigma(G, influential_nodes_degreeDiscount[:nb]))
 
 expected_size_random = []
 influential_nodes_random = rd.sample([k for k in range(nx.number_of_nodes(G))],max_influentials)
-for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a random list of starting nodes
     expected_size_random.append(sigma(G, influential_nodes_random[:nb]))
 
 # print("For greedy algorithm: ", influential_nodes)
@@ -105,10 +112,12 @@ print("For PageRank algorithm: ", influential_nodes_PageRank)
 print("For random: ", influential_nodes_random)
 
 plt.figure(1)
-plt.plot(nb_influential_nodes, expected_size, 'r')
-plt.plot(nb_influential_nodes, expected_size_PageRank, 'g')
-plt.plot(nb_influential_nodes, expected_size_random, 'b')
+# p1=plt.plot(nb_influential_nodes, expected_size, 'r', label="Greedy Algorithm")
+p2=plt.plot(nb_influential_nodes, expected_size_PageRank, 'g', label="PageRank")
+p3=plt.plot(nb_influential_nodes, expected_size_random, 'b', label="Random")
+p4=plt.plot(nb_influential_nodes, expected_size_degreeDiscount, 'y', label="DegreeDiscount")
 plt.title("Number of infected nodes as a function of the initial number of infected nodes")
 plt.xlabel("Number of initially infected vertices")
 plt.ylabel("Expected size of infected vertices")
+plt.legend()
 plt.show()

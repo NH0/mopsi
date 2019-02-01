@@ -2,11 +2,11 @@ import networkx as nx
 import random_graph_construction as rg
 from basic_diffusion_cascade import sigma
 
-n = 400
+n = 100
 k = 4
 p = 0.01
 
-def findMaxNode(V):
+def findMaxNode(G,V):
     maxDeg = 0
     node = V[0]
     for v in V:
@@ -23,7 +23,7 @@ def generalizedDegreeDiscount(G,k,p):
     t = [0]*nx.number_of_nodes(G)
 
     for i in range(k):
-        u = findMaxNode(V)
+        u = findMaxNode(G,V)
         S.append(u)
         V.remove(u)
         NB = []
@@ -48,11 +48,11 @@ def generalizedDegreeDiscount(G,k,p):
 
     return S
 
-G = rg.random_graph_from_graphon(n,rg.W_exp)
-print("##### STARTING CALCULATIONS #####")
-S = generalizedDegreeDiscount(G,k,p)
-print(S)
-print("##### STARTING NODES FOUND #####")
-avgSize = sigma(G,S)
-print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
-print(avgSize)
+# G = rg.random_graph_from_graphon(n,rg.W_exp)
+# print("##### STARTING CALCULATIONS #####")
+# S = generalizedDegreeDiscount(G,k,p)
+# print(S)
+# print("##### STARTING NODES FOUND #####")
+# avgSize = sigma(G,S)
+# print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
+# print(avgSize)

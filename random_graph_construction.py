@@ -86,3 +86,6 @@ def W_min(x,y):
 
 def W_exp(x,y):
     return np.exp(x+y)/(1+np.exp(x+y))
+
+def W_Erdos_Reniy(x,y,p=0.13):
+    return p
