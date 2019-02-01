@@ -9,22 +9,26 @@ import matplotlib.pyplot as plt
 wt = 1/10
 
 # One step of a random propagation given a fixed set of nodes infected at the start. Returns the new infected nodes
-def propagation_step(G, some_nodes, infectious_nodes):
+def propagation_step(G, is_infected_node, infectious_nodes):
     new_infected_nodes = []
     for node in infectious_nodes:
         for neighbor in G.successors(node):
-            if (neighbor not in some_nodes) and (neighbor not in new_infected_nodes): # If not already infected #A MODIFIER PAS EFFICACE
+            if not is_infected_node[neighbor]: # If not already infected
                 # print(G[node][neighbor]['weight'])
                 if rd.random()<G[node][neighbor]['weight']:
                     new_infected_nodes.append(neighbor)
+                    is_infected_node[neighbor] = True
     return new_infected_nodes
 
 # Complete propagation, with each node trying to infect another node
 def propagation(G, starting_nodes):
     new_infected_nodes = starting_nodes[:]
     infected_nodes = starting_nodes[:]
+    is_infected_node = [False for i in range(G.number_of_nodes())]
+    for node in starting_nodes:
+        is_infected_node[node] = True
     while(len(new_infected_nodes)>0):
-        new_infected_nodes = propagation_step(G, infected_nodes, new_infected_nodes)
+        new_infected_nodes = propagation_step(G, is_infected_node, new_infected_nodes)
         infected_nodes += new_infected_nodes
     return infected_nodes
 
