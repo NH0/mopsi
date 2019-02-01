@@ -70,7 +70,7 @@ from page_rank import influential_nodes_PageRank
 ############# Test on a graphon generated graph ############
 new_graph = True # Saving a graph instead of generating a new graph each time
 if(new_graph):
-    G = rg.random_graph_from_graphon(50, rg.W_min, WC_model=True)
+    G = rg.random_graph_from_graphon(40, rg.W_min, WC_model=True)
     nx.write_edgelist(G, "graph.txt")
 else:
     G = nx.read_edgelist("graph.txt", nodetype=int)
@@ -79,7 +79,7 @@ else:
 # print('The two most influential nodes: ', influential_nodes)
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
-max_influentials = 40
+max_influentials = 20
 
 expected_size = []
 iter = 1
@@ -99,6 +99,10 @@ expected_size_random = []
 influential_nodes_random = rd.sample([k for k in range(nx.number_of_nodes(G))],max_influentials)
 for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
     expected_size_random.append(sigma(G, influential_nodes_random[:nb]))
+
+# print("For greedy algorithm: ", influential_nodes)
+print("For PageRank algorithm: ", influential_nodes_PageRank)
+print("For random: ", influential_nodes_random)
 
 plt.figure(1)
 plt.plot(nb_influential_nodes, expected_size, 'r')

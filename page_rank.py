@@ -11,7 +11,7 @@ def norm_l1( vect ):
         sum += abs(vect[i])
     return sum
 
-def PageRank(G, epsilon=10**(-4), alpha=0.15):
+def PageRank(G, epsilon=10**(-4), alpha=0.50):
     n = nx.number_of_nodes(G)
     S = nx.adjacency_matrix(G, weight=None).toarray()
     S2 = np.zeros((n,n))
