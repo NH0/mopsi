@@ -1,6 +1,6 @@
 import networkx as nx
 import random_graph_construction as rg
-from basic_diffusion_cascade import sigma
+from basic_diffusion_cascade import sigma as sig
 
 n = 400
 k = 4
@@ -53,6 +53,7 @@ print("##### STARTING CALCULATIONS #####")
 S = generalizedDegreeDiscount(G,k,p)
 print(S)
 print("##### STARTING NODES FOUND #####")
-avgSize = sigma(G,S)
+print("##### COMPUTING AVERAGE NUMBER OF INFECTED NODES #####")
+avgSize = sig(G,S) # DOES NOT WORK PROPERLY
 print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
 print(avgSize)
