@@ -48,16 +48,6 @@ def generalizedDegreeDiscount(G,k,p):
 
     return S
 
-<<<<<<< HEAD
-# G = rg.random_graph_from_graphon(n,rg.W_exp)
-# print("##### STARTING CALCULATIONS #####")
-# S = generalizedDegreeDiscount(G,k,p)
-# print(S)
-# print("##### STARTING NODES FOUND #####")
-# avgSize = sigma(G,S)
-# print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
-# print(avgSize)
-=======
 def generalizedDegreeDiscount2(G,k):
     V = [i for i in range(nx.number_of_nodes(G))]
     S = []
@@ -91,13 +81,12 @@ def generalizedDegreeDiscount2(G,k):
 
     return S
 
-G = rg.random_graph_from_graphon(n,rg.W_exp)
-print("##### STARTING CALCULATIONS #####")
-S = generalizedDegreeDiscount(G,k,p)
-print(S)
-print("##### STARTING NODES FOUND #####")
-print("##### COMPUTING AVERAGE NUMBER OF INFECTED NODES #####")
-avgSize = sig(G,S) # DOES NOT WORK PROPERLY
-print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
-print(avgSize)
->>>>>>> 1bb8b3f952ae559ed72f40dd55ec9a20e470c554
+# G = rg.random_graph_from_graphon(n,rg.W_exp)
+# print("##### STARTING CALCULATIONS #####")
+# S = generalizedDegreeDiscount(G,k,p)
+# print(S)
+# print("##### STARTING NODES FOUND #####")
+# print("##### COMPUTING AVERAGE NUMBER OF INFECTED NODES #####")
+# avgSize = sig(G,S) # DOES NOT WORK PROPERLY
+# print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
+# print(avgSize)

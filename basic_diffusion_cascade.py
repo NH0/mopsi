@@ -3,6 +3,7 @@ import pylab
 import random as rd
 import random_graph_construction as rg
 import matplotlib.pyplot as plt
+import numpy as np
 # from sets import Set
 
 
@@ -116,3 +117,13 @@ def read_data(filename, in_degree_model, split, first_row):
     print("Number of nodes: ", nx.number_of_nodes(G))
     print("Number of edges: ", nx.number_of_edges(G))
     return G
+
+# Confidence interval for the computation of sigma
+def h(x):
+    return (1+x)*np.log(1+x)-x
+
+def confidence_interval(gamma, sigma, M=120, nb_nodes):
+    lower_bound = sigma/(1+gamma)
+    upper_bound = sigma/(1-gamma)
+    probability = 1 - 2 * np.exp(-M*h(gamma/nb_nodes))
+    return lower_bound, upper_bound, probability
