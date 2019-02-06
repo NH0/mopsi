@@ -48,7 +48,7 @@ def generalizedDegreeDiscount(G,k,p):
 
     return S
 
-def generalizedDegreeDiscount2(G,k):
+def generalizedDegreeDiscount2(G,k): # ESSAYER D'AVOIR DES PROBAS NON CONSTANTES
     V = [i for i in range(nx.number_of_nodes(G))]
     S = []
 
@@ -81,12 +81,12 @@ def generalizedDegreeDiscount2(G,k):
 
     return S
 
-G = rg.random_graph_from_graphon(n,rg.W_exp)
-print("##### STARTING CALCULATIONS #####")
-S = generalizedDegreeDiscount(G,k,p)
-print(S)
-print("##### STARTING NODES FOUND #####")
-print("##### COMPUTING AVERAGE NUMBER OF INFECTED NODES #####")
-avgSize = sig(G,S) # DOES NOT WORK PROPERLY
-print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
-print(avgSize)
+# G = rg.random_graph_from_graphon(n,rg.W_exp)
+# print("##### STARTING CALCULATIONS #####")
+# S = generalizedDegreeDiscount(G,k,p)
+# print(S)
+# print("##### STARTING NODES FOUND #####")
+# print("##### COMPUTING AVERAGE NUMBER OF INFECTED NODES #####")
+# avgSize = sig(G,S) # DOES NOT WORK PROPERLY
+# print("##### AVERAGE NUMBER OF INFECTED NODES FOUND #####")
+# print(avgSize)

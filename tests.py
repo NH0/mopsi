@@ -79,7 +79,7 @@ else:
 # print('The two most influential nodes: ', influential_nodes)
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
-max_influentials = 20
+max_influentials = 15
 
 expected_size = []
 iter = 1
