@@ -48,7 +48,7 @@ def generalizedDegreeDiscount(G,k,p):
 
     return S
 
-def generalizedDegreeDiscount2(G,k):
+def generalizedDegreeDiscount2(G,k): # ESSAYER D'AVOIR DES PROBAS NON CONSTANTES
     V = [i for i in range(nx.number_of_nodes(G))]
     S = []
 
