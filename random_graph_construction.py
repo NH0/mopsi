@@ -5,7 +5,7 @@ import numpy as np
 
 # Random generation of an Erdos Reniy graph with fixed size
 def random_graph(nb_nodes, bernoulli_mean):
-    G = nx.Graph()
+    G = nx.DiGraph()
 
     # Nodes creation
     list_nodes = [k for k in range(nb_nodes)]
@@ -18,6 +18,7 @@ def random_graph(nb_nodes, bernoulli_mean):
         for j in range(i+1,nb_nodes):
             if rd.random() < bernoulli_mean:
                 list_edges.append((i,j,wt))
+                list_edges.append((j,i,wt))
     G.add_weighted_edges_from(list_edges)
 
     return G

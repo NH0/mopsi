@@ -34,7 +34,7 @@ def propagation(G, starting_nodes):
     return infected_nodes
 
 # Computation of the expected size sigma (which is the expectation of the number of infected nodes at the end)
-def sigma(G, some_nodes, nb_iter=120):
+def sigma(G, some_nodes, nb_iter=150):
     mean = 0
     for it in range(nb_iter):
         mean += len(propagation(G, some_nodes))
@@ -122,8 +122,13 @@ def read_data(filename, in_degree_model, split, first_row):
 def h(x):
     return (1+x)*np.log(1+x)-x
 
-def confidence_interval(gamma, sigma, M=120, nb_nodes):
+def probability(gamma, nb_nodes, M=300):
+    return 1 - 2 * np.exp(-M*h(gamma/nb_nodes))
+
+def confidence_interval(gamma, sigma, nb_nodes, M=300):
     lower_bound = sigma/(1+gamma)
     upper_bound = sigma/(1-gamma)
-    probability = 1 - 2 * np.exp(-M*h(gamma/nb_nodes))
-    return lower_bound, upper_bound, probability
+    return lower_bound, upper_bound
+
+if __name__ == '__main__':
+    print(probability(0.1,100, M=5000000))
