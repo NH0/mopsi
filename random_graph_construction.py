@@ -73,8 +73,8 @@ def random_graph_from_graphon(nb_nodes, W, WC_model=False):
         for node_i in range(nb_nodes):
             for node_j in range(node_i+1, nb_nodes):
                 if rd.random() < W(node_proba[node_i], node_proba[node_j]): # We create an edge with a probability given by the graphon
-                    list_edges.append((node_i,node_j,rd.choice([0.01,0.001,0.0005])))
-                    list_edges.append((node_j,node_i,rd.choice([0.01,0.001,0.0005])))
+                    list_edges.append((node_i,node_j,rd.choice([0.01,0.001,0.1])))
+                    list_edges.append((node_j,node_i,rd.choice([0.01,0.001,0.1])))
 
     G.add_weighted_edges_from(list_edges)
 
@@ -86,3 +86,40 @@ def W_min(x,y):
 
 def W_exp(x,y):
     return np.exp(x+y)/(1+np.exp(x+y))
+
+def W_Erdos_Reniy(x,y,p=0.13):
+    return p
+
+## Complete Graph with lots of isolated nodes
+def complete_graph(nb_complete_nodes=20, nb_isolated_nodes=180, WC_model=False):
+    G = nx.DiGraph()
+    nb_nodes = nb_complete_nodes + nb_isolated_nodes
+
+    # Nodes creation
+    list_nodes = [k for k in range(nb_nodes)]
+    G.add_nodes_from(list_nodes)
+
+    # Edges creation
+    list_edges = []
+
+    if(WC_model): # WC model
+        list_edges_non_weighted = [[] for k in range(nb_nodes)]
+        for node_i in range(nb_complete_nodes):
+            for node_j in range(node_i+1, nb_complete_nodes):
+                list_edges_non_weighted[node_i].append(node_j) # Undirected graph
+                list_edges_non_weighted[node_j].append(node_i)
+        for node_i in range(nb_complete_nodes):
+            if len(list_edges_non_weighted[node_i]) != 0:
+                for node_j in list_edges_non_weighted[node_i]:
+                    list_edges.append((node_i,node_j,1/len(list_edges_non_weighted[node_j])))
+                    list_edges.append((node_j,node_i,1/len(list_edges_non_weighted[node_i])))
+
+    else: # Trivalency model, where the probability is chosen in the set {0.1,0.01,0.001}
+        for node_i in range(nb_complete_nodes):
+            for node_j in range(node_i+1, nb_complete_nodes):
+                list_edges.append((node_i,node_j,rd.choice([0.01,0.001,0.1])))
+                list_edges.append((node_j,node_i,rd.choice([0.01,0.001,0.1])))
+
+    G.add_weighted_edges_from(list_edges)
+
+    return G
