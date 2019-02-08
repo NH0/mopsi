@@ -68,7 +68,7 @@ import time
 # plt.figure()
 # plt.plot([nb_nodes for nb_nodes in range(30)], expected_size)
 # plt.show()
-time0 = time.localtime()
+time0 = time.time()
 ############# Test on a graphon generated graph ############
 new_graph = False # Saving a graph instead of generating a new graph each time
 nb_nodes = 70
@@ -168,9 +168,9 @@ plt.xlabel("Number of initially infected vertices")
 plt.ylabel("Expected size of infected vertices")
 plt.legend()
 plt.show()
-time1 = time.localtime()
+time1 = time.time()
 # print(upper_bound_greedy)
-print(time0,time1)
+print(time.strftime("%M:%S",time.localtime(time1-time0)))
 print('\n\a')
 timeSave = time.strftime("%H-%M-%S")
 with open("saves"+timeSave+".txt","w") as saves:
