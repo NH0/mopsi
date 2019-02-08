@@ -170,7 +170,7 @@ plt.legend()
 plt.show()
 time1 = time.localtime()
 # print(upper_bound_greedy)
-print(time0,time1,time1-time0)
+print(time0,time1)
 print('\n\a')
 timeSave = time.strftime("%H-%M-%S")
 with open("saves"+timeSave+".txt","w") as saves:
