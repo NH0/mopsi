@@ -157,6 +157,11 @@ for nb in nb_influential_nodes: # Computation of the expected sizes of the infec
 # print("For PageRank algorithm: ", influential_nodes_PageRank)
 # print("For random: ", influential_nodes_random)
 # print(probability(gamma, nb_nodes))
+
+time1 = time.time()
+print("Processing time "+time.strftime("%Mm%Ss",time.localtime(time1-time0)))
+print('\n\a')
+
 plt.figure(1)
 plt.plot(nb_influential_nodes, expected_size, color='r',  label="Greedy Algorithm")
 plt.plot(nb_influential_nodes, expected_size_PageRank, color='g', label="PageRank")
@@ -191,11 +196,8 @@ plt.show()
 # for k in range(max_influentials):
 #     file.write(str(influential_nodes_random[k])+" ")
 # file.close()
-
-time1 = time.time()
 # print(upper_bound_greedy)
-print("Processing time "+time.strftime("%Mm%Ss",time.localtime(time1-time0)))
-print('\n\a')
+
 with open("saves"+timeSave+".txt","w") as saves:
     saves.write("Expected size :")
     saves.write(str(expected_size))
