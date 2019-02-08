@@ -7,6 +7,10 @@ from basic_diffusion_cascade import *
 from page_rank import influential_nodes_PageRank
 from generalized_degree_discount import generalizedDegreeDiscount
 import time
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5819ce9ba2bb4d6a66cba5d9a0a4d4e3308a53df
 
 ## Test on different graphs
 
@@ -68,8 +72,9 @@ nb_nodes = nx.number_of_nodes(G)
 # plt.figure()
 # plt.plot([nb_nodes for nb_nodes in range(30)], expected_size)
 # plt.show()
-
+time0 = time.localtime()
 ############# Test on a graphon generated graph ############
+<<<<<<< HEAD
 t0 = time.clock()
 # new_graph = False # Saving a graph instead of generating a new graph each time
 # nb_nodes = 20
@@ -79,6 +84,15 @@ t0 = time.clock()
 # else:
 #     G = nx.read_edgelist("graph.txt", nodetype=int, create_using=nx.DiGraph)
 #     nb_nodes = nx.number_of_nodes(G)
+=======
+new_graph = False # Saving a graph instead of generating a new graph each time
+nb_nodes = 70
+if(new_graph):
+    G = rg.random_graph_from_graphon(nb_nodes, rg.W_exp, WC_model=True)
+    nx.write_edgelist(G, "graph.txt")
+else:
+    G = nx.read_edgelist("graph.txt", nodetype=int)
+>>>>>>> 5819ce9ba2bb4d6a66cba5d9a0a4d4e3308a53df
 
 # new_graph = True # Saving a graph instead of generating a new graph each time
 # if(new_graph):
@@ -98,6 +112,7 @@ expected_size = []
 iter = 1
 
 nb_influential_nodes = [n for n in range(max_influentials)]
+<<<<<<< HEAD
 #
 # expected_size = []
 # upper_bound_greedy = []
@@ -109,11 +124,29 @@ nb_influential_nodes = [n for n in range(max_influentials)]
 #     lbg, ubg = confidence_interval(gamma, sigma1, nb_nodes=nb_nodes)
 #     upper_bound_greedy.append(ubg)
 #     lower_bound_greedy.append(lbg)
+=======
+
+expected_size = []
+upper_bound_greedy = []
+lower_bound_greedy = []
+print("Calculating influential nodes Greedy")
+influential_nodes = influential_nodes(G,max_influentials)
+print("Done\n")
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a greedy algorithm
+    # print("Node :"+str(nb+1))
+    sigma1 = sigma(G, influential_nodes[:nb])
+    expected_size.append(sigma1)
+    lbg, ubg = confidence_interval(gamma, sigma1, nb_nodes=nb_nodes)
+    upper_bound_greedy.append(ubg)
+    lower_bound_greedy.append(lbg)
+>>>>>>> 5819ce9ba2bb4d6a66cba5d9a0a4d4e3308a53df
 
 upper_bound_PageRank = []
 lower_bound_PageRank = []
 expected_size_PageRank = []
+print("Calculating influential nodes Page rank")
 influential_nodes_PageRank = influential_nodes_PageRank(G,max_influentials)
+print("Done")
 for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a PageRank algorithm
     sigma1 = sigma(G, influential_nodes_PageRank[:nb])
     expected_size_PageRank.append(sigma1)
@@ -121,6 +154,7 @@ for nb in nb_influential_nodes: # Computation of the expected sizes of the infec
     upper_bound_PageRank.append(ubg)
     lower_bound_PageRank.append(lbg)
 
+<<<<<<< HEAD
 # expected_size_degreeDiscount = []
 # upper_bound_degreeDiscount = []
 # lower_bound_degreeDiscount = []
@@ -131,11 +165,27 @@ for nb in nb_influential_nodes: # Computation of the expected sizes of the infec
 #     lbg, ubg = confidence_interval(gamma, sigma1, nb_nodes=nb_nodes)
 #     upper_bound_degreeDiscount.append(ubg)
 #     lower_bound_degreeDiscount.append(lbg)
+=======
+expected_size_degreeDiscount = []
+upper_bound_degreeDiscount = []
+lower_bound_degreeDiscount = []
+print("Calculating influential nodes generalized Degree Discount")
+influential_nodes_degreeDiscount = generalizedDegreeDiscount(G,max_influentials,p=0.01)
+print("Done")
+for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a degree discount algorithm
+    sigma1 = sigma(G, influential_nodes_degreeDiscount[:nb])
+    expected_size_degreeDiscount.append(sigma1)
+    lbg, ubg = confidence_interval(gamma, sigma1, nb_nodes=nb_nodes)
+    upper_bound_degreeDiscount.append(ubg)
+    lower_bound_degreeDiscount.append(lbg)
+>>>>>>> 5819ce9ba2bb4d6a66cba5d9a0a4d4e3308a53df
 
 expected_size_random = []
 upper_bound_random = []
 lower_bound_random = []
+print("Calculating influential nodes random")
 influential_nodes_random = rd.sample([k for k in range(nx.number_of_nodes(G))],max_influentials)
+print("Done")
 for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a random list of starting nodes
     sigma1 = sigma(G, influential_nodes_random[:nb])
     expected_size_random.append(sigma1)
@@ -161,6 +211,7 @@ plt.xlabel("Number of initially infected vertices")
 plt.ylabel("Expected size of infected vertices")
 plt.legend()
 plt.show()
+<<<<<<< HEAD
 print("Processing time:", time.clock())
 
 file = open("data.txt", "a")
@@ -182,3 +233,22 @@ file.write('\n')
 for k in range(max_influentials):
     file.write(str(influential_nodes_random[k])+" ")
 file.close()
+=======
+time1 = time.localtime()
+# print(upper_bound_greedy)
+print(time0,time1,time1-time0)
+print('\n\a')
+timeSave = time.strftime("%H-%M-%S")
+with open("saves"+timeSave+".txt","w") as saves:
+    saves.write("Expected size :")
+    saves.write(str(expected_size))
+    saves.write('\n\n     #####      \n\n')
+    saves.write("Lower bound of greedy algorithm :")
+    saves.write(str(lower_bound_greedy))
+    saves.write('\n\n')
+    saves.write("Lower bound of greedy algorithm :")
+    saves.write(str(upper_bound_greedy))
+    saves.write('\n\n     #####\n\n')
+    saves.write("Influential nodes :")
+    saves.write(str(influential_nodes))
+>>>>>>> 5819ce9ba2bb4d6a66cba5d9a0a4d4e3308a53df
