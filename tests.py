@@ -56,8 +56,8 @@ import time
 # plt.show()
 
 ############## Test on a "who-trust-who" graph ##############
-G = read_data('soc-hamsterster.edges', in_degree_model=True, split=' ', first_row=2)
-nb_nodes = nx.number_of_nodes(G)
+# G = read_data('soc-hamsterster.edges', in_degree_model=True, split=' ', first_row=2)
+# nb_nodes = nx.number_of_nodes(G)
 
 # influential_nodes = influential_nodes(G,2)
 # print(sigma(G, rd.sample(nx.nodes(G),3)))
@@ -71,15 +71,14 @@ nb_nodes = nx.number_of_nodes(G)
 # plt.show()
 time0 = time.time()
 ############# Test on a graphon generated graph ############
-t0 = time.clock()
-# new_graph = False # Saving a graph instead of generating a new graph each time
-# nb_nodes = 20
-# if(new_graph):
-#     G = rg.random_graph_from_graphon(nb_nodes, rg.W_exp, WC_model=True)
-#     nx.write_edgelist(G, "graph.txt")
-# else:
-#     G = nx.read_edgelist("graph.txt", nodetype=int, create_using=nx.DiGraph)
-#     nb_nodes = nx.number_of_nodes(G)
+new_graph = True # Saving a graph instead of generating a new graph each time
+nb_nodes = 40
+if(new_graph):
+    G = rg.random_graph_from_graphon(nb_nodes, rg.W_exp, WC_model=True)
+    nx.write_edgelist(G, "graph.txt")
+else:
+    G = nx.read_edgelist("graph.txt", nodetype=int, create_using=nx.DiGraph)
+    nb_nodes = nx.number_of_nodes(G)
 
 # new_graph = True # Saving a graph instead of generating a new graph each time
 # if(new_graph):
@@ -172,31 +171,29 @@ plt.ylabel("Expected size of infected vertices")
 plt.legend()
 plt.show()
 
-print("Processing time:", time.clock())
-
-file = open("data.txt", "a")
-for k in range(max_influentials):
-    file.write(str(expected_size_PageRank[k])+" ")
-file.write('\n')
-for k in range(max_influentials):
-    file.write(str(influential_nodes_PageRank[k])+" ")
-file.write('\n')
+# file = open("data.txt", "a")
 # for k in range(max_influentials):
-#     file.write(str(expected_size_degreeDiscount[k])+" ")
+#     file.write(str(expected_size_PageRank[k])+" ")
 # file.write('\n')
 # for k in range(max_influentials):
-#     file.write(str(influential_nodes_degreeDiscount[k])+" ")
+#     file.write(str(influential_nodes_PageRank[k])+" ")
 # file.write('\n')
-for k in range(max_influentials):
-    file.write(str(expected_size_random[k])+" ")
-file.write('\n')
-for k in range(max_influentials):
-    file.write(str(influential_nodes_random[k])+" ")
-file.close()
+# # for k in range(max_influentials):
+# #     file.write(str(expected_size_degreeDiscount[k])+" ")
+# # file.write('\n')
+# # for k in range(max_influentials):
+# #     file.write(str(influential_nodes_degreeDiscount[k])+" ")
+# # file.write('\n')
+# for k in range(max_influentials):
+#     file.write(str(expected_size_random[k])+" ")
+# file.write('\n')
+# for k in range(max_influentials):
+#     file.write(str(influential_nodes_random[k])+" ")
+# file.close()
 
-time1 = time.localtime()
+time1 = time.time()
 # print(upper_bound_greedy)
-print(time.strftime("%M:%S",time.localtime(time1-time0)))
+print("Processing time :"+time.strftime("%M:%S",time.localtime(time1-time0)))
 print('\n\a')
 timeSave = time.strftime("%H-%M-%S")
 with open("saves"+timeSave+".txt","w") as saves:
