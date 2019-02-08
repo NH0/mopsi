@@ -4,6 +4,7 @@ import random as rd
 import random_graph_construction as rg
 import matplotlib.pyplot as plt
 import numpy as np
+import multiprocessing as mp
 # from sets import Set
 
 
@@ -13,7 +14,7 @@ wt = 1/10
 def propagation_step(G, is_infected_node, infectious_nodes):
     new_infected_nodes = []
     for node in infectious_nodes:
-        for neighbor in G.successors(node):
+        for neighbor in nx.all_neighbors(G,node):
             if not is_infected_node[neighbor]: # If not already infected
                 # print(G[node][neighbor]['weight'])
                 if rd.random()<G[node][neighbor]['weight']:
@@ -33,11 +34,22 @@ def propagation(G, starting_nodes):
         infected_nodes += new_infected_nodes
     return infected_nodes
 
+def step(G,some_nodes):
+    return len(propagation(G,some_nodes))
+
 # Computation of the expected size sigma (which is the expectation of the number of infected nodes at the end)
 def sigma(G, some_nodes, nb_iter=150):
     mean = 0
-    for it in range(nb_iter):
-        mean += len(propagation(G, some_nodes))
+    # --- MULTIPROCESSING ---
+    pool = mp.Pool(mp.cpu_count())
+    argG = [(G,some_nodes)]*nb_iter
+    for length in pool.starmap(step,argG,nb_iter//mp.cpu_count()):
+        mean += length
+    pool.close()
+    pool.join()
+    # --- END MULTIPROCESSING ---
+    # for it in range(nb_iter):
+    #     mean += len(propagation(G, some_nodes))
     mean /= nb_iter
     return mean
 
