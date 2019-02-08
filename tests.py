@@ -56,7 +56,8 @@ import time
 # plt.show()
 
 ############## Test on a "who-trust-who" graph ##############
-# G = read_data('soc-hamsterster.edges', in_degree_model=True, split=' ', first_row=2)
+G = read_data('soc-hamsterster.edges', in_degree_model=True, split=' ', first_row=2)
+nb_nodes = nx.number_of_nodes(G)
 
 # influential_nodes = influential_nodes(G,2)
 # print(sigma(G, rd.sample(nx.nodes(G),3)))
@@ -70,13 +71,15 @@ import time
 # plt.show()
 time0 = time.time()
 ############# Test on a graphon generated graph ############
-new_graph = False # Saving a graph instead of generating a new graph each time
-nb_nodes = 70
-if(new_graph):
-    G = rg.random_graph_from_graphon(nb_nodes, rg.W_exp, WC_model=True)
-    nx.write_edgelist(G, "graph.txt")
-else:
-    G = nx.read_edgelist("graph.txt", nodetype=int)
+t0 = time.clock()
+# new_graph = False # Saving a graph instead of generating a new graph each time
+# nb_nodes = 20
+# if(new_graph):
+#     G = rg.random_graph_from_graphon(nb_nodes, rg.W_exp, WC_model=True)
+#     nx.write_edgelist(G, "graph.txt")
+# else:
+#     G = nx.read_edgelist("graph.txt", nodetype=int, create_using=nx.DiGraph)
+#     nb_nodes = nx.number_of_nodes(G)
 
 # new_graph = True # Saving a graph instead of generating a new graph each time
 # if(new_graph):
@@ -90,7 +93,7 @@ else:
 # print('The two most influential nodes: ', influential_nodes)
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
-max_influentials = 20
+max_influentials = 80
 gamma = 0.01
 expected_size = []
 iter = 1
@@ -156,19 +159,42 @@ for nb in nb_influential_nodes: # Computation of the expected sizes of the infec
 # print(probability(gamma, nb_nodes))
 plt.figure(1)
 # plt.plot(nb_influential_nodes, expected_size, color='r',  label="Greedy Algorithm")
-# plt.plot(nb_influential_nodes, expected_size_PageRank, color='g', label="PageRank")
-# plt.plot(nb_influential_nodes, expected_size_random, color='b', label="Random")
+plt.plot(nb_influential_nodes, expected_size_PageRank, color='g', label="PageRank")
+plt.plot(nb_influential_nodes, expected_size_random, color='b', label="Random")
 # plt.plot(nb_influential_nodes, expected_size_degreeDiscount, color='y', label="DegreeDiscount")
-plt.errorbar(nb_influential_nodes, expected_size, yerr=[lower_bound_greedy, upper_bound_greedy], color='r',  label="Greedy Algorithm")
-plt.errorbar(nb_influential_nodes, expected_size_PageRank, yerr=[lower_bound_PageRank, upper_bound_PageRank], color='g', label="PageRank")
-plt.errorbar(nb_influential_nodes, expected_size_random, yerr=[lower_bound_random, upper_bound_random], color='b', label="Random")
-plt.errorbar(nb_influential_nodes, expected_size_degreeDiscount, yerr=[lower_bound_degreeDiscount, upper_bound_degreeDiscount], color='y', label="DegreeDiscount")
+# plt.errorbar(nb_influential_nodes, expected_size, yerr=[lower_bound_greedy, upper_bound_greedy], color='r',  label="Greedy Algorithm")
+# plt.errorbar(nb_influential_nodes, expected_size_PageRank, yerr=[lower_bound_PageRank, upper_bound_PageRank], color='g', label="PageRank")
+# plt.errorbar(nb_influential_nodes, expected_size_random, yerr=[lower_bound_random, upper_bound_random], color='b', label="Random")
+# plt.errorbar(nb_influential_nodes, expected_size_degreeDiscount, yerr=[lower_bound_degreeDiscount, upper_bound_degreeDiscount], color='y', label="DegreeDiscount")
 plt.title("Number of infected nodes as a function of the initial number of infected nodes")
 plt.xlabel("Number of initially infected vertices")
 plt.ylabel("Expected size of infected vertices")
 plt.legend()
 plt.show()
-time1 = time.time()
+
+print("Processing time:", time.clock())
+
+file = open("data.txt", "a")
+for k in range(max_influentials):
+    file.write(str(expected_size_PageRank[k])+" ")
+file.write('\n')
+for k in range(max_influentials):
+    file.write(str(influential_nodes_PageRank[k])+" ")
+file.write('\n')
+# for k in range(max_influentials):
+#     file.write(str(expected_size_degreeDiscount[k])+" ")
+# file.write('\n')
+# for k in range(max_influentials):
+#     file.write(str(influential_nodes_degreeDiscount[k])+" ")
+# file.write('\n')
+for k in range(max_influentials):
+    file.write(str(expected_size_random[k])+" ")
+file.write('\n')
+for k in range(max_influentials):
+    file.write(str(influential_nodes_random[k])+" ")
+file.close()
+
+time1 = time.localtime()
 # print(upper_bound_greedy)
 print(time.strftime("%M:%S",time.localtime(time1-time0)))
 print('\n\a')
