@@ -25,7 +25,7 @@ def propagation_step(G, is_infected_node, infectious_nodes):
 def propagation(G, starting_nodes):
     new_infected_nodes = starting_nodes[:]
     infected_nodes = starting_nodes[:]
-    is_infected_node = [False for i in range(G.number_of_nodes())]
+    is_infected_node = [False for i in range(G.number_of_nodes()+1)]
     for node in starting_nodes:
         is_infected_node[node] = True
     while(len(new_infected_nodes)>0):
@@ -80,7 +80,7 @@ def display_graph(G, infected, influential_nodes):
 
 # Parsing function for the graph data set
 def read_data(filename, in_degree_model, split, first_row):
-    G = nx.Graph()
+    G = nx.DiGraph()
     nodes = set()
     edges = []
 
@@ -110,6 +110,7 @@ def read_data(filename, in_degree_model, split, first_row):
     for row in rows:
         column = row.split(split)
         edges.append((int(column[0]),int(column[1]),weight_per_node[int(column[1])]))
+        edges.append((int(column[1]),int(column[0]),weight_per_node[int(column[0])]))
 
     G.add_nodes_from(nodes)
     G.add_weighted_edges_from(edges)
