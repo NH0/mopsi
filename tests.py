@@ -70,12 +70,13 @@ import time
 # plt.plot([nb_nodes for nb_nodes in range(30)], expected_size)
 # plt.show()
 time0 = time.time()
+timeSave = time.strftime("%d-%Hh%Mm%Ss")
 ############# Test on a graphon generated graph ############
-new_graph = True # Saving a graph instead of generating a new graph each time
-nb_nodes = 40
+new_graph = False # Saving a graph instead of generating a new graph each time
+nb_nodes = 70
 if(new_graph):
     G = rg.random_graph_from_graphon(nb_nodes, rg.W_exp, WC_model=True)
-    nx.write_edgelist(G, "graph.txt")
+    nx.write_edgelist(G, "graph"+timeSave+".txt")
 else:
     G = nx.read_edgelist("graph.txt", nodetype=int, create_using=nx.DiGraph)
     nb_nodes = nx.number_of_nodes(G)
@@ -92,7 +93,7 @@ else:
 # print('The two most influential nodes: ', influential_nodes)
 # print('Expected size with those influential nodes: ', sigma(G, influential_nodes))
 
-max_influentials = 80
+max_influentials = 20
 gamma = 0.01
 expected_size = []
 iter = 1
@@ -118,7 +119,7 @@ lower_bound_PageRank = []
 expected_size_PageRank = []
 print("Calculating influential nodes Page rank")
 influential_nodes_PageRank = influential_nodes_PageRank(G,max_influentials)
-print("Done")
+print("Done\n")
 for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a PageRank algorithm
     sigma1 = sigma(G, influential_nodes_PageRank[:nb])
     expected_size_PageRank.append(sigma1)
@@ -126,25 +127,25 @@ for nb in nb_influential_nodes: # Computation of the expected sizes of the infec
     upper_bound_PageRank.append(ubg)
     lower_bound_PageRank.append(lbg)
 
-expected_size_degreeDiscount = []
-upper_bound_degreeDiscount = []
-lower_bound_degreeDiscount = []
-print("Calculating influential nodes generalized Degree Discount")
-influential_nodes_degreeDiscount = generalizedDegreeDiscount(G,max_influentials,p=0.01)
-print("Done")
-for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a degree discount algorithm
-    sigma1 = sigma(G, influential_nodes_degreeDiscount[:nb])
-    expected_size_degreeDiscount.append(sigma1)
-    lbg, ubg = confidence_interval(gamma, sigma1, nb_nodes=nb_nodes)
-    upper_bound_degreeDiscount.append(ubg)
-    lower_bound_degreeDiscount.append(lbg)
+# expected_size_degreeDiscount = []
+# upper_bound_degreeDiscount = []
+# lower_bound_degreeDiscount = []
+# print("Calculating influential nodes generalized Degree Discount")
+# influential_nodes_degreeDiscount = generalizedDegreeDiscount(G,max_influentials,p=0.01)
+# print("Done")
+# for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a degree discount algorithm
+#     sigma1 = sigma(G, influential_nodes_degreeDiscount[:nb])
+#     expected_size_degreeDiscount.append(sigma1)
+#     lbg, ubg = confidence_interval(gamma, sigma1, nb_nodes=nb_nodes)
+#     upper_bound_degreeDiscount.append(ubg)
+#     lower_bound_degreeDiscount.append(lbg)
 
 expected_size_random = []
 upper_bound_random = []
 lower_bound_random = []
 print("Calculating influential nodes random")
 influential_nodes_random = rd.sample([k for k in range(nx.number_of_nodes(G))],max_influentials)
-print("Done")
+print("Done\n")
 for nb in nb_influential_nodes: # Computation of the expected sizes of the infected set given an infection through nb initially infected nodes, with a random list of starting nodes
     sigma1 = sigma(G, influential_nodes_random[:nb])
     expected_size_random.append(sigma1)
@@ -157,7 +158,7 @@ for nb in nb_influential_nodes: # Computation of the expected sizes of the infec
 # print("For random: ", influential_nodes_random)
 # print(probability(gamma, nb_nodes))
 plt.figure(1)
-# plt.plot(nb_influential_nodes, expected_size, color='r',  label="Greedy Algorithm")
+plt.plot(nb_influential_nodes, expected_size, color='r',  label="Greedy Algorithm")
 plt.plot(nb_influential_nodes, expected_size_PageRank, color='g', label="PageRank")
 plt.plot(nb_influential_nodes, expected_size_random, color='b', label="Random")
 # plt.plot(nb_influential_nodes, expected_size_degreeDiscount, color='y', label="DegreeDiscount")
@@ -193,9 +194,8 @@ plt.show()
 
 time1 = time.time()
 # print(upper_bound_greedy)
-print("Processing time :"+time.strftime("%M:%S",time.localtime(time1-time0)))
+print("Processing time "+time.strftime("%Mm%Ss",time.localtime(time1-time0)))
 print('\n\a')
-timeSave = time.strftime("%H-%M-%S")
 with open("saves"+timeSave+".txt","w") as saves:
     saves.write("Expected size :")
     saves.write(str(expected_size))
